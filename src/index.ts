@@ -312,5 +312,3 @@ const connection = mysql.createPool({
   console.log(err);
 }
 */
-
-
