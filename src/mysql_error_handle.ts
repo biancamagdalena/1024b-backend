@@ -1,7 +1,6 @@
 import {type Response} from 'express'
 class MysqlErrorHandle{
     constructor(readonly erro:unknown, readonly res:Response){
-
     }
     validar(){
          console.log(this.erro);
@@ -23,7 +22,6 @@ class MysqlErrorHandle{
         else {
             this.res.status(500).json({ mensagem: "Erro no servidor!" })
         }
-
     }
 }
 export default MysqlErrorHandle
