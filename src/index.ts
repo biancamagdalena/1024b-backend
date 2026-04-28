@@ -351,8 +351,32 @@ idclientes, nome, cidade, idade, idpedidos, datapedido dos pedidos feitos no ano
 na tabela pedidos. USE O COMANDO COUNT(*) para contar as quantidades*/
 
 
+app.get("/cliente_data_pedido", async (req, res) => {
+    try {
+        const [resultado, campos] =
+            await connection.execute(`SELECT * FROM clientes`)
+        console.log(resultado)
+        res.status(200).json(resultado)
+    } catch (err) {
+        const mysqlErrorHandle = new MysqlErrorHandle(err,res)
+        mysqlErrorHandle.validar()
+    }
+})
 
-
+app.post("/pedidos_2026", async (req, res) => {
+    try {
+        const { idcliente, nome, cidade, idade, idpedidos, datapedido } = req.body
+        if (!idcliente || !nome || !cidade || !idade || !idpedidos || !datapedido)
+            return res.status(500).json({ mensagem: "Erro: Os dados de id ou nome estão incorretos!" })
+        const [resultado, campos] =
+            await connection.execute(`insert into pessoa values (?,?,?,?,?,?)`, [idcliente, nome, cidade, idade, idpedidos, datapedido])
+        console.log(resultado)
+        res.status(201).json({ mensagem: "Sucesso" })
+    } catch (err) {
+        const mysqlErrorHandle = new MysqlErrorHandle(err,res)
+        mysqlErrorHandle.validar()
+    }
+})
 
 
 
