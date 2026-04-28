@@ -259,6 +259,7 @@ import connection from './mysql_connection.js'
 const app = express()
 app.use(express.json())
 
+/*
 app.get("/pessoas", async (req, res) => {
     try {
         const [resultado, campos] =
@@ -336,6 +337,21 @@ app.get("/listar_produtos_caros", async (req, res) => {
 app.listen(8000, () => {
     console.log("Servidor iniciado na porta 8000")
 })
+
+/*Crie uma rota '/cliente_data_pedido' que retorne os clientes e a data que os mesmos fizeram o pedido.
+Para realizar isso, utilize o comando inner jon para juntar as tabelas.
+Utilize o banco de dados chamado dbteremercado
+
+SELECT nome, datapedido FROM clientes c INNER JOIN pedidos p ON c.idclientes=p.clientes_idclientes
+
+2 Crie uma rota chamada '\pedidos_2026' que retorne
+idclientes, nome, cidade, idade, idpedidos, datapedido dos pedidos feitos no ano de 2026
+
+3 Crie uma rota chamada '\quantidade_pedidos' que retorne um JSON no formato '{quantidade_pedidos:100}' com a quantidade de pedidos cadastrados
+na tabela pedidos. USE O COMANDO COUNT(*) para contar as quantidades*/
+
+
+
 
 
 
