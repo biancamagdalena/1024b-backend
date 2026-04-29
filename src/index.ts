@@ -414,12 +414,41 @@ app.get("/quantidade_pedidos_clientes", async (req, res) => {
 /**
  * 5) ROTA    /quantidade_produtos_por_cliente
  * Crie um código que retorne o nome do cliente e a quantidade de produtos que cada pedido tem
- *    formato    [{nome:"Nome Cliente",idpedido:1,quantidade_produtos:1000}]
- * 
+ *    formato    [{nome:"Nome Cliente",idpedido:1,quantidade_produtos:1000}]*/
+
+app.get("/quantidade_produtos_por_cliente", async (req, res) => {
+    try {
+        const [resultado, campos] =
+            await connection.execute(`SELECT c.nome,p.idpedidos as idpedido, SUM(quantidade)
+                
+                SELECT c.nome as nome,COUNT(*) as quantidade_pedidos FROM clientes c  
+                      INNER JOIN pedidos p ON c.idclientes=p.clientes_idclientes GROUP BY c.nome`)
+        console.log(resultado)
+        res.status(200).json(resultado)
+    } catch (err) {
+        const mysqlErrorHandle = new MysqlErrorHandle(err,res)
+        mysqlErrorHandle.validar()
+    }
+})
+
+/*
  * 6)    /valor_pedido_total
  * Crie um código que retorne o nome do cliente e o valor total de cada pedido
  *    [{nome:"Nome Cliente",valor_total:1000}]
  */
+
+app.get("/valor_pedido_total", async (req, res) => {
+    try {
+        const [resultado, campos] =
+            await connection.execute(`SELECT c.nome as nome,COUNT(*) as quantidade_pedidos FROM clientes c  
+                      INNER JOIN pedidos p ON c.idclientes=p.clientes_idclientes GROUP BY c.nome`)
+        console.log(resultado)
+        res.status(200).json(resultado)
+    } catch (err) {
+        const mysqlErrorHandle = new MysqlErrorHandle(err,res)
+        mysqlErrorHandle.validar()
+    }
+})
 
 
 
