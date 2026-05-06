@@ -256,8 +256,10 @@ import express from 'express'
 import MysqlErrorHandle from './mysql_error_handle.js'
 import connection from './mysql_connection.js'
 import type { RowDataPacket } from 'mysql2'
+import cors from 'cors'
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 interface IQuantidadePedido extends RowDataPacket{
@@ -412,17 +414,15 @@ app.get("/quantidade_pedidos_clientes", async (req, res) => {
 })
 
 /**
- * 5) ROTA    /quantidade_produtos_por_cliente
- * Crie um código que retorne o nome do cliente e a quantidade de produtos que cada pedido tem
- *    formato    [{nome:"Nome Cliente",idpedido:1,quantidade_produtos:1000}]*/
+  5) ROTA    /quantidade_produtos_por_cliente
+  Crie um código que retorne o nome do cliente e a quantidade de produtos que cada pedido tem
+  formato [{nome:"Nome Cliente",idpedido:1,quantidade_produtos:1000}]
+  */
 
 app.get("/quantidade_produtos_por_cliente", async (req, res) => {
     try {
         const [resultado, campos] =
-            await connection.execute(`SELECT c.nome,p.idpedidos as idpedido, SUM(quantidade)
-                
-                SELECT c.nome as nome,COUNT(*) as quantidade_pedidos FROM clientes c  
-                      INNER JOIN pedidos p ON c.idclientes=p.clientes_idclientes GROUP BY c.nome`)
+            await connection.execute(`SELECT nome, idpedidos, SUM(quantidade) as quantidade_produtos FROM clientes INNER JOIN pedidos ON clientes_idclientes = idclientes INNER JOIN itenspedidos ON pedidos_idpedidos = idpedidos group by idpedidos`)
         console.log(resultado)
         res.status(200).json(resultado)
     } catch (err) {
@@ -440,8 +440,7 @@ app.get("/quantidade_produtos_por_cliente", async (req, res) => {
 app.get("/valor_pedido_total", async (req, res) => {
     try {
         const [resultado, campos] =
-            await connection.execute(`SELECT c.nome as nome,COUNT(*) as quantidade_pedidos FROM clientes c  
-                      INNER JOIN pedidos p ON c.idclientes=p.clientes_idclientes GROUP BY c.nome`)
+            await connection.execute(`SELECT clientes.nome, idpedidos, SUM(quantidade*preco) as valor_total FROM clientes INNER JOIN pedidos ON clientes_idclientes = idclientes INNER JOIN itenspedidos ON pedidos_idpedidos = idpedidos INNER JOIN produtos ON produtos_idprodutos = idprodutos GROUP BY idpedidos, clientes.nome`)
         console.log(resultado)
         res.status(200).json(resultado)
     } catch (err) {
