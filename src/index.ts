@@ -255,7 +255,7 @@ console.log(id)*/
 import express from 'express'
 import MysqlErrorHandle from './mysql_error_handle.js'
 import connection from './mysql_connection.js'
-import type { RowDataPacket } from 'mysql2'
+import { type ResultSetHeader, type RowDataPacket } from 'mysql2'
 import cors from 'cors'
 
 const app = express()
@@ -282,7 +282,7 @@ app.post("/pessoas", async (req, res) => {
     try {
         const { id, nome } = req.body
         if (!id || !nome)
-            return res.status(500).json({ mensagem: "Erro: Os dados de id ou nome estão incorretos!" })
+            return res.status(5400).json({ mensagem: "Erro: Os dados de id ou nome estão incorretos!" })
         const [resultado, campos] =
             await connection.execute(`insert into pessoa values (?,?)`, [id, nome])
         console.log(resultado)
@@ -448,6 +448,29 @@ app.get("/valor_pedido_total", async (req, res) => {
         mysqlErrorHandle.validar()
     }
 })
+
+app.post("/pessoas", async (req, res) => {
+    const { id, nome } = req.body
+
+     if (!id || !nome){
+            return res.status(400).json({ mensagem: "Campos id e nome são obrigatórios!" })
+    }
+    try {
+        const [result] =
+            await connection.execute<ResultSetHeader>(`insert into luademel.pessoa values (?,?)`, [id, nome])
+
+            if(result.affectedRows === 0){
+                return res.status(500).json({ mensagem: "Erro ao inserir a pessoa!" })
+            }
+
+            return res.status(201).json({ mensagem: "Pessoa cadastrada com sucesso!" })
+
+    } catch (err) {
+        return res.status(500).json({ mensagem: "Erro interno ao cadastrar pessoa" })
+    }
+})
+
+
 
 
 
