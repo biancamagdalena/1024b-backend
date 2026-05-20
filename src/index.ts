@@ -457,7 +457,7 @@ app.post("/pessoas", async (req, res) => {
     }
     try {
         const [result] =
-            await connection.execute<ResultSetHeader>(`insert into luademel.pessoa values (?,?)`, [id, nome])
+            await connection.execute<ResultSetHeader>('insert into luademel.pessoa values (?,?)', [id, nome])
 
             if(result.affectedRows === 0){
                 return res.status(500).json({ mensagem: "Erro ao inserir a pessoa!" })
@@ -467,6 +467,27 @@ app.post("/pessoas", async (req, res) => {
 
     } catch (err) {
         return res.status(500).json({ mensagem: "Erro interno ao cadastrar pessoa" })
+    }
+})
+
+app.post("/cadastro_produto_v2", async (req, res) => {
+     const { id, nome, categoria, preco, data_criacao, data_modificacao } = req.body
+
+     if (!id || !nome || !categoria || !preco || !data_criacao || !data_modificacao)
+            return res.status(400).json({ mensagem: "Erro: Os dados de id,nome,categoria,preco,data_criacao,data_modificacao estão incorretos!" })
+
+    try {
+        const [result] =
+            await connection.execute<ResultSetHeader>(`insert into produto values (?,?,?,?,?,?)`, [id, nome, categoria, preco, data_criacao, data_modificacao])
+
+             if(result.affectedRows === 0){
+                return res.status(500).json({ mensagem: "Erro ao inserir a pessoa!" })
+            }
+
+        return res.status(201).json({ mensagem: "Sucesso" })
+    } catch (err) {
+               return res.status(500).json({ mensagem: "Erro interno ao cadastrar pessoa" })
+
     }
 })
 
