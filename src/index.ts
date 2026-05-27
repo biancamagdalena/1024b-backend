@@ -498,6 +498,17 @@ app.post("/cadastro_produto_v2", async (req, res) => {
     }
 })
 
+app.post("/cadastro_multiplos_produtos", async (req, res) =>{
+    const { produtos } = req.body
+
+
+
+
+})
+
+// crie a rota POST /cadastro_multiplos_produtos que recebe um array de produtos no body. Para cada produto, inserir no banco com data_criacao automatica e data_modificacao null.
+// Retornar 201 com a mensagem "X produtos cadastrados com sucesso!"
+
 
 
 
