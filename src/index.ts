@@ -483,7 +483,7 @@ app.post("/cadastro_produto_v2", async (req, res) => {
      const dataModificacao = null;
 
     try {
-        const [result] = await connection.execute<ResultSetHeader>(`insert into pessoaproduto values (?,?,?,?,?,?)`, [id, nome, categoria, preco, dataCriacao, dataModificacao])
+        const [result] = await connection.execute<ResultSetHeader>(`insert into produto values (?,?,?,?,?,?)`, [id, nome, categoria, preco, dataCriacao, dataModificacao])
 
              if(result.affectedRows === 0){
                 return res.status(500).json({ mensagem: "Erro ao inserir o produto!" })
@@ -500,16 +500,30 @@ app.post("/cadastro_produto_v2", async (req, res) => {
 
 app.post("/cadastro_multiplos_produtos", async (req, res) =>{
     const { produtos } = req.body
+    if (!produtos)
+        return res.status(400).json({ mensagem: "Erro: O campo produtos é obrigatório!" })
+
+        const dataCriacao = new Date();
+        const dataModificacao = null;
+
+    try {
+        const [result] = await connection.execute<ResultSetHeader>(`insert into  `)
+    }
 
 
+   
+   
+  
 
+
+    
 
 })
 
 // crie a rota POST /cadastro_multiplos_produtos que recebe um array de produtos no body. Para cada produto, inserir no banco com data_criacao automatica e data_modificacao null.
 // Retornar 201 com a mensagem "X produtos cadastrados com sucesso!"
 
-
+//Crie a rota put /produto/id. O Id vem pela URL e o novo nome vem pelo body. Fazer UPDATE no banco. Se o ID não existe, retorna 404. Se atualizado, retorna 200
 
 
 
