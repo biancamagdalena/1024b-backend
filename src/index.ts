@@ -449,6 +449,8 @@ app.get("/valor_pedido_total", async (req, res) => {
     }
 })
 
+/////////////////
+
 app.post("/pessoas", async (req, res) => {
     const { id, nome } = req.body
 
@@ -471,25 +473,31 @@ app.post("/pessoas", async (req, res) => {
 })
 
 app.post("/cadastro_produto_v2", async (req, res) => {
-     const { id, nome, categoria, preco, data_criacao, data_modificacao } = req.body
+     const { id, nome, categoria, preco} = req.body
 
-     if (!id || !nome || !categoria || !preco || !data_criacao || !data_modificacao)
-            return res.status(400).json({ mensagem: "Erro: Os dados de id,nome,categoria,preco,data_criacao,data_modificacao estão incorretos!" })
+     if (!id || !nome || !categoria || !preco)
+            return res.status(400).json({ mensagem: "Erro: Os dados de id, nome, categoria, preco, estão incorretos!" })
+
+     const dataCriacao = new Date();
+
+     const dataModificacao = null;
 
     try {
-        const [result] =
-            await connection.execute<ResultSetHeader>(`insert into produto values (?,?,?,?,?,?)`, [id, nome, categoria, preco, data_criacao, data_modificacao])
+        const [result] = await connection.execute<ResultSetHeader>(`insert into pessoaproduto values (?,?,?,?,?,?)`, [id, nome, categoria, preco, dataCriacao, dataModificacao])
 
              if(result.affectedRows === 0){
-                return res.status(500).json({ mensagem: "Erro ao inserir a pessoa!" })
+                return res.status(500).json({ mensagem: "Erro ao inserir o produto!" })
             }
 
-        return res.status(201).json({ mensagem: "Sucesso" })
+        return res.status(201).json({ mensagem: "Produto cadastrado com sucesso!" })
+
     } catch (err) {
-               return res.status(500).json({ mensagem: "Erro interno ao cadastrar pessoa" })
+        const mysqlErrorHandle = new MysqlErrorHandle(err, res);
+        mysqlErrorHandle.validar()
 
     }
 })
+
 
 
 
