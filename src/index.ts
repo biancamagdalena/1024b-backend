@@ -510,13 +510,32 @@ app.post("/cadastro_multiplos_produtos", async (req, res) =>{
         const [result] = await connection.execute<ResultSetHeader>(`insert into  `)
     }
 
-
-   
-   
-  
-
-
     
+
+})
+
+app.put("/produto/:id", async (req, res) =>{
+    const {id} = req.params;
+
+    let {nome, preco, categoria} = req.body
+    
+    //campos não enviados viram null
+    preco = preco ?? null;
+    categoria = categoria ?? null;
+
+    await connection.execute(
+        `
+        UPTADE produto
+        SET nome = ?, categoria = ?
+        WHERE id = ? 
+        `,
+        [nome, preco, categoria, id]
+    )
+
+    return res.json({
+        mensagem: "Porduto substituído!"
+    });
+
 
 })
 
