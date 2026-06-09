@@ -449,8 +449,9 @@ app.get("/valor_pedido_total", async (req, res) => {
     }
 })
 
-/////////////////
+///////////////////////////
 
+//ATV 1 POST
 app.post("/pessoas", async (req, res) => {
     const { id, nome } = req.body
 
@@ -472,6 +473,8 @@ app.post("/pessoas", async (req, res) => {
     }
 })
 
+
+//ATV 2 POST
 app.post("/cadastro_produto_v2", async (req, res) => {
      const { id, nome, categoria, preco} = req.body
 
@@ -498,6 +501,7 @@ app.post("/cadastro_produto_v2", async (req, res) => {
     }
 })
 
+//ATV 3 POST
 app.post("/cadastro_multiplos_produtos", async (req, res) =>{
     const { produtos } = req.body
     if (!produtos)
@@ -510,39 +514,63 @@ app.post("/cadastro_multiplos_produtos", async (req, res) =>{
         const [result] = await connection.execute<ResultSetHeader>(`insert into  `)
     }
 
-    
-
+    catch (err){
+         const mysqlErrorHandle = new MysqlErrorHandle(err, res);
+        mysqlErrorHandle.validar()
+    }
 })
 
-app.put("/produto/:id", async (req, res) =>{
-    const {id} = req.params;
+//ATV 2 PUT
+app.put("/produto/:id", async (req, res) => {
+	
+    const { id } = req.params;
+    let { nome, preco, categoria } = req.body;
 
-    let {nome, preco, categoria} = req.body
-    
-    //campos não enviados viram null
+    // Campos não enviados viram NULL
     preco = preco ?? null;
     categoria = categoria ?? null;
 
     await connection.execute(
         `
-        UPTADE produto
-        SET nome = ?, categoria = ?
-        WHERE id = ? 
+        UPDATE produto
+        SET nome = ?, preco = ?, categoria = ?
+        WHERE id = ?
         `,
         [nome, preco, categoria, id]
-    )
+    );
 
     return res.json({
-        mensagem: "Porduto substituído!"
+        mensagem: "Produto substituído!"
     });
 
 
+});
+
+//ATV 3 PUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+app.delete("/pessoa/:id", async (require, res) => {
+    const { id } = req.params;
+
+    try{
+        const [result] = await connection.execute<ResultSetHeader>("DELETE FROM pessoa WHERE id = ?", [id]);
+
+        if (result)
+    }
 })
-
-// crie a rota POST /cadastro_multiplos_produtos que recebe um array de produtos no body. Para cada produto, inserir no banco com data_criacao automatica e data_modificacao null.
-// Retornar 201 com a mensagem "X produtos cadastrados com sucesso!"
-
-//Crie a rota put /produto/id. O Id vem pela URL e o novo nome vem pelo body. Fazer UPDATE no banco. Se o ID não existe, retorna 404. Se atualizado, retorna 200
+*/
 
 
 
